@@ -2,7 +2,7 @@ module.exports = {
     config: {
         name: "pending",
         aliases: ["pen", "approve", "পেন্ডিং"],
-        version: "2.0",
+        version: "2.1",
         author: "Hridoy",
         countDown: 10,
         role: 2,
@@ -24,7 +24,7 @@ module.exports = {
             noPending: "× কোনো গ্রুপ পেন্ডিং কিউতে নেই! 😴",
             listHeader: "📋 মোট পেন্ডিং গ্রুপ: %1টি\n",
             replyGuide: "\n• অ্যাপ্রুভ করতে নম্বর দিয়ে রিপ্লাই দিন (1 2 3)",
-            successNotify: "বট এখন কানেক্টেড! !help ব্যবহার করুন ✨",
+            successNotify: "বট এখন কানেক্টেড! .help ব্যবহার করুন ✨",
             approvedBy: "এই গ্রুপটি %1 দ্বারা অ্যাপ্রুভ করা হয়েছে।",
             done: "✅ %1টি গ্রুপ অ্যাপ্রুভ হয়েছে",
             error: "× সমস্যা: %1"
@@ -41,8 +41,9 @@ module.exports = {
     },
 
     onReply: async function ({ api, event, Reply, usersData, getLang }) {
-        const authorName = String.fromCharCode(77, 97, 104, 77, 85, 68);
-        if (this.config.author !== authorName) return;
+
+        // 🔥 FIX: author lock remove
+        // (আগের MahMUD check delete করা হয়েছে)
 
         const { author, pending } = Reply;
         if (String(event.senderID) !== String(author)) return;
@@ -54,7 +55,6 @@ module.exports = {
             api.setMessageReaction("⏳", event.messageID, () => {}, true);
             const name = await usersData.getName(event.senderID);
 
-            // 👉 Bot nickname (change here)
             const botName = global.GoatBot.config.nickNameBot || "✦ 𝙏𝙊𝙍𝙐 𝘾𝙃𝘼𝙉 ✦";
 
             for (const i of index) {
@@ -62,7 +62,6 @@ module.exports = {
 
                 const target = pending[i - 1];
 
-                // ✅ Auto nickname set
                 try {
                     await api.changeNickname(
                         botName,
@@ -71,7 +70,6 @@ module.exports = {
                     );
                 } catch (e) {}
 
-                // ✅ Send messages
                 await api.sendMessage(getLang("successNotify"), target.threadID);
                 await api.sendMessage(getLang("approvedBy", name), target.threadID);
 
@@ -88,8 +86,8 @@ module.exports = {
     },
 
     onStart: async function ({ api, event, getLang, message }) {
-        const authorName = String.fromCharCode(77, 97, 104, 77, 85, 68);
-        if (this.config.author !== authorName) return;
+
+        // 🔥 FIX: author lock remove
 
         try {
             api.setMessageReaction("⏳", event.messageID, () => {}, true);
