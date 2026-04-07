@@ -7,7 +7,7 @@ module.exports = {
     role: 0,
     author: "Hridoy",
     description: "Find anime from image",
-    category: "anime",
+    category: "Media",
     guide: "Reply to an image"
   },
 
